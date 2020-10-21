@@ -1,0 +1,31 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(dplyr)
+```
+
+```{r}
+bucks <- read_csv("starbucks_drinkMenu_expanded.csv")
+```
+```{r}
+select(bucks, Beverage_category, Beverage, Beverage_prep)
+```
+```{r}
+mutate(bucks, Calorie_diff = 135 - Calories)
+bucks
+```
+```{r}
+select(bucks, Beverage_category)
+```
+```{r}
+filter(bucks, Beverage_category == "Coffee")
+```
+
+```{r}
+help("mean")
+mean(bucks, Beverage_category == "coffee")
+```
+
