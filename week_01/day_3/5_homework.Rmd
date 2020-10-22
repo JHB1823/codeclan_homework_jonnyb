@@ -39,32 +39,20 @@ movies_selected
 #Q3 Find missing values if any in each set
 
 ```{r}
-movies_selected %>%
-  filter(is.na(title))
+movies_selected %>% 
+  summarise(na_runtime = sum(is.na(runtime)),
+            na_title = sum(is.na(title)),
+            na_budget = sum(is.na(budget)))
 
-dim(movies_selected)
+#correct soloution, what i had attempted is below and got the same answer but in a much less efficcient way 
+
 ```
 
-```{r}
-movies_selected %>%
-  filter(is.na(runtime))
-
-dim(movies_selected)
-```
-
-
-```{r}
-movies_selected %>%
-  filter(is.na(budget))
-
-dim(movies_selected)
-```
 
 Question 4 
 
 ```{r}
 movies_runtime <- movies_selected %>%
-  select(runtime) %>% 
   mutate(runtime = na_if(runtime, "0"))
 
 movies_runtime
@@ -95,8 +83,9 @@ movies_imputed %>%
  question 7 
  
 ```{r}
-movies_imputed2 <- movies_imputed %>% 
+movies_imputed <- movies_imputed %>% 
   mutate(budget = if_else(budget < 100, median(budget), budget))
+movies_imputed
 
 ```
  
