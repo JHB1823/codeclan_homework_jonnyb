@@ -1,0 +1,100 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+#Day 3 Homework
+
+```{r}
+library(tidyverse)
+movies <- read_csv("data/movies.csv")
+```
+view data 
+
+```{r}
+movies
+```
+View in some more detail 
+
+```{r}
+head(data)
+```
+
+#question 1 notes:
+
+*first i would sort title in desc order to make it easier to follow.
+*i would take a look at a couple of different columns to ensure all data in each is in the same format.
+*Check for any missing value(na) or out of place values 
+
+
+#Q2
+
+create subset of data and select what to put in it.
+```{r}
+movies_selected <- select(movies, title, runtime, budget)
+
+movies_selected
+```
+
+#Q3 Find missing values if any in each set
+
+```{r}
+movies_selected %>%
+  filter(is.na(title))
+
+dim(movies_selected)
+```
+
+```{r}
+movies_selected %>%
+  filter(is.na(runtime))
+
+dim(movies_selected)
+```
+
+
+```{r}
+movies_selected %>%
+  filter(is.na(budget))
+
+dim(movies_selected)
+```
+
+Question 4 
+
+```{r}
+movies_runtime <- movies_selected %>%
+  select(runtime) %>% 
+  mutate(runtime = na_if(runtime, "0"))
+
+movies_runtime
+```
+Question 5 
+
+```{r}
+movies_imputed <- movies_runtime %>%
+  mutate(runtime =
+           coalesce(runtime, median(runtime, na.rm = TRUE)))
+
+movies_imputed
+```
+ 
+ slice_min(.data, order_by, ..., n, prop, with_ties = TRUE)
+ 
+ new_coders %>% 
+  slice_max(last_yr_income, n = 5)
+
+ #Question 6
+ 
+```{r}
+movies_selected %>% 
+  slice_min(movies_imputed, n - 10)
+
+```
+ question 7 
+ 
+```{r}
+
+```
+ 
+
