@@ -1,0 +1,121 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Load in librarys & data set.
+
+
+```{r}
+
+```
+
+```{r}
+install.packages(stringr)
+library(tidyverse)
+library(dplyr)
+library(stringr)
+read_csv("data/books.csv")
+
+```
+
+Rename data set for research
+
+```{r}
+books_info <- read.csv("data/books.csv")
+
+books_info
+```
+
+
+Initial reading of data set
+
+```{r}
+dim(books_info)
+```
+
+
+```{r}
+nrow(books_info)
+```
+
+```{r}
+ncol(books_info)
+```
+
+```{r}
+names(books_info)
+```
+
+Find missing values 
+
+```{r}
+books_info %>%
+  select(everything()) %>%
+  summarise_all(funs(sum(is.na(.))))
+```
+
+Replace/remove missing values
+
+```{r}
+books_info2 <- books_info %>% 
+  drop_na(ratings_count, text_reviews_count)
+books_info2
+```
+
+Review/investigate data set
+
+View the data set by only looking at author,average rating, rating count and publisher.
+
+Arrange order by average rating in desc
+
+```{r}
+top_rated <- books_info2 %>% 
+  select(authors, average_rating, ratings_count)
+  arrange(top_rated, desc(average_rating))
+top_rated
+```
+The above data shows that arranginf by the average rating is missleading as some of these results have been rated very few times therefore have a higher average rating.
+
+Lets arrange the same data set by ratings count to compare the average rating to the number of ratings to get a better value.
+
+```{r}
+arrange(top_rated, desc(ratings_count)) %>% 
+  print
+```
+The data above lets us see the average rating in desc order compared to the average rating.
+
+
+Filter only results by author j.k rowling/mary grandpre
+
+```{r}
+jkrowling <- filter(books_info2, authors == "J.K. Rowling/Mary GrandPré")
+
+jkrowling
+```
+
+Organise above date by rating count in desc order
+
+```{r}
+jkrowling_books <-jkrowling %>% 
+  select(authors, average_rating, ratings_count)
+arrange(jkrowling_books, desc(ratings_count))
+```
+
+Arrange by average rating 
+
+```{r}
+jkrowling_books %>% 
+  select(authors, average_rating, ratings_count)
+arrange(jkrowling_books, desc(average_rating))
+```
+
+Now lets look at the data that only has over 20000000 or above ratings
+
+```{r}
+jk_highest_rated <- jkrowling_books %>% 
+  select(average_rating, ratings_count) %>% 
+  filter(ratings_count >= 2000000)
+jk_highest_rated
+```
+
