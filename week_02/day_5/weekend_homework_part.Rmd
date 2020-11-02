@@ -1,0 +1,108 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+
+meteorite_landings <- read_csv("meteorite_landings.csv")
+```
+
+```{r}
+meteorite_landings
+```
+
+#Change variable names
+
+```{r}
+meteorite_landings_clean <- meteorite_landings  %>% 
+  rename(geo_location = GeoLocation,
+         mass_grams = `mass (g)`)
+
+meteorite_landings_clean
+```
+
+# fix geo_loaction and split latitude/longitude
+```{r}
+pattern <- "\\(\\)"
+meteorite_landings_split <- meteorite_landings_clean %>%
+  mutate(geo_location = str_remove(geo_location, pattern = "\\(")) %>%
+  mutate(geo_location = str_remove(geo_location, pattern = "\\)"))
+
+
+meteorite_split <- meteorite_landings_split %>%
+  separate(geo_location, c("latitude", "longitude"), sep = "," )
+
+
+meteorite_numeric <- meteorite_split %>%
+  mutate(latitude = as.numeric(latitude)) %>%
+  mutate(longitude = as.numeric(longitude))
+
+meteorite_numeric
+```
+
+
+
+
+#Replace any missing values in latitude and longitude with zeros.
+
+```{r}
+meteorite_remove_na <- meteorite_numeric %>%
+  mutate(latitude = coalesce(latitude, na.rm = 0)) %>%
+  mutate(longitude = coalesce(longitude, na.rm = 0))
+
+meteorite_remove_na
+```
+
+#Remove meteorites less than 1000g in weight from the data.
+
+```{r}
+meteorite_mass <- meteorite_remove_na %>%
+  filter(mass_grams >= 1000)
+meteorite_mass
+```
+#Order the data by the year of discovery.
+
+```{r}
+meteorite_year <- meteorite_mass %>% 
+  arrange(desc(year))
+meteorite_year
+
+```
+
+```{r}
+meteorite_year
+```
+
+
+#Find the names and years found for the 10 largest meteorites in the data.
+
+```{r}
+meteorites_heaviest <- meteorite_year %>% 
+  arrange(desc(mass_grams))
+meteorites_heaviest
+```
+#Assertive programming 
+
+```{r}
+library(assertr)
+```
+
+#Part 1 
+
+```{r}
+meteorite_landings %>% 
+  filter("id", 
+         "name", 
+         "mass (g)", 
+         "fall", 
+         "year", 
+         "GeoLocation")
+```
+#Part 2 
+
+```{r}
+verify(latitude >= -90 & latitude <= 90) %>% 
+  verify(longitude >= -180 & longitude <= 180)
+```
