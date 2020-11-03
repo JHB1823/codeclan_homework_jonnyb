@@ -106,12 +106,20 @@ pre_appends(10)
 Write a function which checks if two vectors have the same elements.
 
 ```{r}
+x1 <- 1:5
+x2 <- c(5, 4, 3, 2, 1)
 
-element <- a
-element <- b
+is_same_vector <- function(vector_1, vector_2) {
+  if (vector_1 == vector_2) {
+    return("Exactly the same")
+  }
 
-nchar("identical(a,b)")
-if 
+  if (sort(vector_1) == sort(vector_2)) {
+    return("The same")
+  }
+
+  return("Different")
+}
 
 ```
 
