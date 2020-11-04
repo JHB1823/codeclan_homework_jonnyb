@@ -37,7 +37,7 @@ SELECT country,
 	COUNT(id) AS num_employees
 FROM employees
 WHERE country = 'Portugal' OR country = 'Spain'
-GROUP BY country;
+GROUP BY country IN ('Portugal', 'Spain');
 
 
 --Question 5
@@ -106,16 +106,48 @@ ORDER BY   department ASC, fte_hours ASC;
 --Question 11 
 --Obtain a table showing any departments in which there are two or more employees lacking a stored first name.
 -- Order the table in descending order of the number of employees lacking a first name, 
---and then in alphabetical order by department
+--and then in alphabetical order by department???
+
+SELECT department, 
+	COUNT(id) AS num_employees_no_first
+FROM employees 
+WHERE first_name IS NULL
+GROUP BY department
+HAVING COUNT(id) >= 2
+ORDER BY COUNT(id) DESC NULLS LAST, department ASC NULLS LAST ;
+
+
+--Question break down 
+--1 SELECT departments 
+--Count() for missing names 
+--2 FROM employees
+--3 WHERE first_name
+
+--GROUP BY department 
+-- when missing 2 names ? count names missing insert count between 1-2
+-- show group when missing names count is equal to/more than 2 
+-- missing values in desc
+
 
 SELECT
 	department, 
-	COUNT(id) AS lacking_names
+	COUNT(id) AS missing_names
 FROM employees 
 WHERE first_name IS NULL
 GROUP BY department 
 HAVING COUNT(id) >= 2
-ORDER BY COUNT(id) DESC, department ASC;
+ORDER BY COUNT(ID) DESC, department ; 
 
 --Question 12
 --Tough!] Find the proportion of employees in each department who are grade 1.
+
+SELECT 
+  department, 
+  SUM(CAST(grade = '1' AS INT)) / CAST(COUNT(id) AS REAL) AS prop_grade_1 
+FROM employees 
+GROUP BY department;
+
+SELECT 
+	grade,
+	grade = 1 AS in_grade_1
+FROM employees;
