@@ -44,7 +44,7 @@ ORDER BY e.last_name  ASC NULLS LAST;
 
 SELECT 
   t.name AS team_names, 
-  COUNT(e.id) AS nu_memployees
+  COUNT(e.id) AS num_memployees
 FROM employees AS e RIGHT JOIN teams AS t
 ON e.team_id = t.id
 GROUP BY t.name
@@ -68,6 +68,11 @@ SELECT
   SUM(fte_hours * salary) OVER (ORDER BY fte_hours * salary ASC NULLS LAST)
     AS running_tot_effective_salary
 FROM employees;
+
+
+--The total_day_charge of a team is defined as the charge_cost of 
+--the team multiplied by the number of employees in the team. 
+--Calculate the total_day_charge for each team.
 
 
 

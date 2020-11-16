@@ -185,14 +185,32 @@ ON e.team_id = t.id;
 -- 12
 
 
-SELECT e.id,
-	e.first_name,
-	e.last_name,
-	e.salary,
-	e.fte_hours,
-	e.salary / 
+
+
+SELECT 
+	id,
+	first_name,
+	last_name,
+	salary,
+	fte_hours,
+	salary
+SELECT 
+	department,
+	count(id) AS num_employees
+FROM employees 
+GROUP BY department 
+ORDER BY count(id) DESC 
+LIMIT 1
 	
-	
+
+SELECT 
+	id,
+	first_name,
+	last_name,
+	salary,
+	fte_hours,
+	salary
+
 ???
 
 
