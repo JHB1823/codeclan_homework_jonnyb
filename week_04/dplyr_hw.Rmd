@@ -1,0 +1,116 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(readr)
+salaries <- read_csv("~/codeclan_homework_jonnyb/week_04/dplyr_practice_hw/data/salaries.csv")
+salaries
+```
+#Use select to see the beginning salary variable and the current salary variable.
+
+```{r}
+select(salaries, "beginning_salary", "current_salary")
+
+```
+
+#Use filter to see the employees aged over 50, who have a salary over £20,000.
+
+```{r}
+filter(salaries, "age" == ("current_salary" <= 20000
+                           ))
+```
+
+#Use arrange to order by the data so that the highest salaries are first.
+
+```{r}
+arrange(salaries, desc(current_salary))
+```
+
+
+#Use mutate to make a new variables beginning_salary_pence and current_salary_pence. These should have the corresponding salaries in pence instead of pounds.
+
+```{r}
+mutate(salaries, beginning_salary_pence = beginning_salary*100,
+           current_salary_pence   = current_salary*100)
+
+```
+
+
+#Use summarise to find the maximum age and the minimum age.
+
+
+```{r}
+summarise(salaries, max_age = max(age),
+              min_age = min(age))
+```
+
+#Find the minimum salary and the maximum salary.
+
+```{r}
+summarise(salaries, min_salary = min(current_salary),
+              max_salary = max(current_salary))
+```
+
+
+#Find all the employees aged under 30.
+
+```{r}
+filter(salaries, age < 30)
+```
+
+
+#Order the data in terms of increasing educational level where ties are broken using age.
+
+
+```{r}
+arrange(salaries, educational_level, age)
+```
+
+#9
+```{r}
+select(salaries, -gender, -employment_category, -is_white)
+```
+
+#10
+
+```{r}
+filter(salaries, work_experience < 2 | educational_level < 12)
+```
+
+#11
+?
+
+#12
+?')
+
+
+
+### Pipes
+
+```{r}
+salaries %>%
+  filter(educational_level < 17) %>%
+  group_by(educational_level) %>%
+  summarise(mean_salary = mean(current_salary)) %>%
+  arrange(desc(mean_salary))
+```
+2. 
+
+```{r}
+salaries %>%
+  filter(work_experience > 2) %>%
+  group_by(gender, employment_category) %>%
+  summarise(mean_salary = mean(current_salary))
+```
+```{r}
+salaries %>%
+  group_by(employment_category) %>%
+  summarise(mean_salary = mean(current_salary),
+            median_salary = median(current_salary)) %>%
+  mutate(difference = mean_salary - median_salary) %>%
+  arrange(desc(difference))
+```
+
