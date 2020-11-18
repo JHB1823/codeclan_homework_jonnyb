@@ -1,0 +1,87 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(CodeClanData)
+
+```
+
+###4 MVP
+#4.1 Part 1
+
+#Question 1 
+
+```{r}
+qb_revenue_breakdown
+```
+```{r}
+ggplot(qb_revenue_breakdown, aes(fill= Product, y= Revenue, x= Year)) + 
+    geom_bar(position="stack", stat="identity")+
+  scale_y_continuous("Sales", labels = scales::dollar_format(prefix = "£"))+
+  ggtitle("Revenue by product")
+
+```
+#Question 2 
+
+```{r}
+qb_monthly_sales
+fitness_monthly_sales <- qb_monthly_sales %>%
+  filter(Cashflow == "Kwikbit Unit 1 Sales")
+
+ggplot(fitness_monthly_sales)+
+  aes(x = Date, y = Amount)+
+  geom_line()+
+  ggtitle("Kwickbit Unit 1 Sales")
+
+```
+
+#Question 3 
+
+```{r}
+monthly_sales_total <- qb_monthly_sales %>%
+  filter(Cashflow != "Kwikbit Unit 1 Sales")
+monthly_sales_total
+
+ggplot(monthly_sales_total)+
+  aes(x = Date, y = Amount, colour = Cashflow)+
+  geom_line()+
+    ggtitle("TotalRevenue VS Cashflow")
+
+```
+#Question 4 
+
+```{r}
+qb_competitors
+
+ggplot(qb_competitors)+
+  aes(x = Year, y = Revenue, fill = Company)+
+  geom_area()+
+  ggtitle("Revenue per Company")
+```
+#Question 5 
+
+Now show the sales from the 5 competitors as a line graph. Include an extra layer that shows the data points used to make the lines.
+
+```{r}
+ggplot(qb_competitors) +
+  aes(x = Year, y = Revenue, colour = Company) +
+  geom_line() +
+  geom_point()+
+  ggtitle("Revenue by Company")
+```
+# Question 6 
+```{r}
+device_steps_data <- 
+mutate(qb_device_data, decimal_hour = hours + (mins/60))
+
+ggplot(device_steps_data) +
+  aes(x = decimal_hour, y = counts) +
+  geom_line() + 
+  facet_grid(id ~ device)+
+  ggtitle("Individual step data")
+```
+
+
