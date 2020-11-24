@@ -1,0 +1,152 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# Week_6_day_1_homework
+
+#Q1
+If I roll a six-sided dice once, what is the probability of getting a number less than 5?
+
+No of total outcomes =6
+No of favorable outcomes =4 {1, 2, 3, 4}
+Prob < 5 is = 4/6 = 2/3
+
+Q2
+How many outcomes are there in the sample space of an experiment in which we toss three dice?
+
+```{r}
+library(prob)
+library(gtools)
+library(tidyverse)
+```
+
+#Q1 If I roll a six-sided dice once, what is the probability of getting a number less than 5?
+
+No of total outcomes =6
+No of favorable outcomes =4 {1, 2, 3, 4}
+Prob < 5 is = 4/6 = 2/3 
+
+#Q2 How many outcomes are there in the sample space of an experiment in which we toss three dice?
+
+3 dice = 6 x 6 x 6 = 216
+```{r}
+roll_three_dice <- rolldie(3)
+roll_three_dice %>% 
+    summarise(size_of_s = n())
+
+
+```
+
+#Q3 In an experiment where we roll four dice:
+
+4 dice = 6 x 6 x 6 x 6 = 1296
+```{r}
+roll_four_dice <- rolldie(4)
+roll_four_dice %>% 
+  summarise(size_of_s = n())
+
+```
+#Q3.1 How many outcomes are in the event total_equals_5_6_7 (i.e. the total of the four dice equals 5, 6 or 7)? 
+
+```{r}
+total_equals <- roll_four_dice %>%
+  mutate(sum_of_rolls = X1 + X2 + X3 + X4) %>%
+  filter(sum_of_rolls == 5 | 
+           sum_of_rolls == 6 | 
+           sum_of_rolls == 7)
+  
+total_equals <- total_equals %>%
+  group_by(sum_of_rolls) %>%
+  summarise(combination_roll = n())
+total_equals
+```
+
+#Q3.2 what is the probability of this event?
+
+
+#Q3.3 what assumptions do we apply in answering part ii? 
+
+Outcomes may not happen in all three events, therefore there is no link of events A & B & C. 
+
+
+#Q4. Five chairs are placed in a row in a room, along with five people of differing height. The people sit down randomly on the chairs. What is the probability that they sit in order of decreasing height, left to right?
+
+Work out possible combinations first:
+
+```{r}
+people <- 5
+chairs <- c("A","B", "C", "D", "E")
+five_people_on_chairs <- permutations(n = 5, r = 5, v = chairs, repeats.allowed = FALSE)
+
+five_people_on_chairs <- as_tibble(five_people_on_chairs)
+nrow(five_people_on_chairs)
+```
+
+Combinations = 120 possible combinations.
+Possibilites they sit in height order = 1
+  1. c(A, B, C, D, E) 
+  = 1/120
+  =0.008333333
+
+
+# 5. I roll six dice:
+
+```{r}
+roll_six_dice <- rolldie(6)
+nrow(roll_six_dice)
+```
+
+#Q5.1.1what is the probability I see the numbers 6, 5, 4, 3, 2 and 1 in order on the dice, left to right?
+
+is 1/46656 = 0.00002143347 
+
+what is the probability I see one each of the numbers 6, 5, 4, 3, 2 and 1 on the dice regardless of order?
+
+#????
+
+```{r}
+one_to_six <- c(6,5,4,3,2,1)
+
+
+roll_six_dice_answer  <- roll_six_dice %>% 
+  filter(isin(.,one_to_six, ordered = FALSE))
+nrow(roll_six_dice_answer)
+```
+Possible ooutcomes = 720
+                   = possible outcomes/total outcomes of six 
+                   =720/46656
+                   
+#Q6 If I draw a single card from a 52-card deck, and it is black, what is the probability that its suit is spades?
+
+52 cards,
+2 colours,
+4 suites,
+Black cards = 2 suites
+Spades/Clubs 
+Black cards = 52/2/2        
+            = 13
+            =13/52
+            = 0.25
+
+#Q7 Eight patients: Alice, Bob, Carmen, Dinesh, Ella, Fergus, Gianna and Henry are waiting to see a doctor, but only five appointment slots are left today.
+
+#Q7.1 In how many different orders can the doctor see patients today?
+Make vector for patients
+use permutations to find order
+```{r}
+patients_names <- c("Alice", "Bob", "Carmen", "Dinesh", "Ella", "Fergus", "Gianna", "Henry" )
+
+patients_order <- as.tibble(
+  permutations(length(patients_names), 5, v = patients_names, repeats.allowed = FALSE))
+  
+  
+nrow(patients_order)
+```
+
+#Q7.2What is the probability of Gianna and Danesh both being seen today?
+
+
+
+
+ 

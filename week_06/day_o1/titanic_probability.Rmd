@@ -1,0 +1,56 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(prob)
+library(gtools)
+library(tidyverse)
+```
+
+```{r}
+titanic_info <- read_csv("data/titanic.csv")
+titanic_info
+```
+
+```{r}
+survived_prob <- titanic_info %>% 
+  mutate(crew = !str_detect(class, "1st|2nd|3rd")) %>% 
+  select(class,
+         crew,
+         survived)
+survived_prob
+```
+#Probability calcultor
+
+```{r}
+calc_p <- function (df) {
+  return(n()/nrow(df))
+}
+```
+
+
+#Probability that crew survived?
+
+```{r}
+crew_survived_probability <- survived_prob %>% 
+  filter(crew == TRUE) %>% 
+  summarise(p = calc_p(survived_prob)) %>% 
+  pull()
+
+crew_survived_probability
+```
+#Probability passangers survived
+
+```{r}
+passengers_survived_probability <- survived_prob %>% 
+  filter(crew == FALSE) %>% 
+  summarise(p = calc_p(survived_prob)) %>% 
+  pull()
+
+passengers_survived_probability 
+```
+
+
+
