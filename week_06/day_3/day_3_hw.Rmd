@@ -1,0 +1,125 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(infer)
+```
+
+```{r}
+house_sales <- read_csv("ames.csv")  %>% 
+  clean_names()
+
+glimpse(house_sales)
+dim(house_sales)
+```
+
+Obsevations = 2930
+variables = 82
+
+```{r}
+house_sales %>% 
+  head()
+```
+
+
+
+#Distribution of lot areas
+
+lot_area plot:
+
+```{r}
+lot_areas <- house_sales %>% 
+  select(lot_area)
+
+lot_areas %>% 
+  ggplot() +
+  aes(x = lot_area) +
+  geom_histogram(fill = "grey30", colour = "white", bins = 30) +
+  labs(x = "Lot Area",
+       y = "Count",
+       title = "Distribution of lot areas") 
+```
+
+
+```{r}
+lot_areas %>% 
+  ggplot() +
+  aes(x = lot_area) +
+  geom_histogram(fill = "grey30", colour = "grey30", bins = 100) +
+  labs(x = "Lot Area",
+       y = "Count",
+       title = "Distribution of lot areas") 
+```
+
+There is more detail in this plot. It may be that the distribution of lot areas
+under 25000 produces a normal distribution, but for the whole data, this can't
+be discerned.
+
+# Calculating a mean lot area
+.
+
+```{r}
+mean_sample_lot_area <- lot_areas %>% 
+    specify(response = lot_area) %>% 
+    generate(reps = 1000, type = "bootstrap") %>% 
+    calculate(stat = "mean")
+mean_sample_lot_area %>% 
+  ggplot() +
+  aes(stat) + 
+  geom_histogram(colour = "white", bins = 30) + 
+  labs(x = "Mean lot area",
+       y = "",
+       title = "Distribution of means ") 
+```
+
+### Calculate Confidence Interval
+
+
+```{r}
+infer_ci_95 <- mean_sample_lot_area %>% 
+  get_ci()
+infer_ci_95
+```
+
+
+```{r}
+mean_sample_lot_area %>% 
+  visualise() +
+  shade_ci(endpoints = infer_ci_95) +
+  labs(x = "Mean lot area",
+       y = "",
+       title = "Distribution of  means ")
+```
+
+
+```{r}
+
+infer_ci_99 <- mean_sample_lot_area %>% 
+  get_ci(level = 0.99, type = "percentile")
+infer_ci_99
+```
+
+Creating a plot with 99% CI
+```{r}
+mean_sample_lot_area %>% 
+  visualise() +
+  shade_ci(endpoints = infer_ci_99) +
+  labs(x = "Mean lot area",
+       y = "",
+       title = "Distribution of  means ") 
+```
+
+As expected, the CI is wider (more of the distribution is within the 99% CI)
+
+Finally, the best estimate of the mean can be calculated. For completeness,
+the lower CI boundary and upper CI boundary have been included.
+
+```{r}
+mean_sample_lot_area %>% 
+  summarise(best_estimate_mean = mean(stat)) %>% 
+  bind_cols(infer_ci_95)
+```

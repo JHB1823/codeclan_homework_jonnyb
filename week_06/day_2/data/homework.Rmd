@@ -1,0 +1,58 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(janitor)
+
+
+mobile_phones <- read_csv("20190928-items.csv") %>% 
+  clean_names()
+```
+#Firstly i will look into the data i have been given :
+
+```{r}
+glimpse(mobile_phones)
+```
+Rows: 792 = observations
+Columns: 9 = variables        
+
+
+```{r}
+mobile_phones %>% 
+  head(10)
+```
+
+The dimensions of the data: 792 observations of 9 variables.
+
+```{r}
+phone_data %>% 
+  dim()
+```
+The names of the variables are:
+
+```{r}
+phone_data %>% 
+  names()
+```
+## Most phones
+
+Which brand has the highest numbers of phones in the dataset?
+
+```{r}
+# a variable can be added, which counts the occurences of each brand in the df
+brand_freq <- phone_data %>% 
+  add_count(brand) %>%
+  group_by(brand) %>% 
+  summarise(n = mean(n), .groups = 'drop_last')
+```
+
+After ordering the brand_frequency in terms of descending frequency of each
+brand: Samsung is the most commonly occurring brand.
+
+```{r}
+brand_freq %>% 
+  arrange(desc(n))
+```
